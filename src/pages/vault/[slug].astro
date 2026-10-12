@@ -1,0 +1,198 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TocTree from "../../components/TocTree.astro";
+
+export async function getStaticPaths() {
+  const vault = await getCollection("vault");
+  return vault.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+interface TocNode {
+  slug: string;
+  text: string;
+  depth: number;
+  rawDepth: number;
+  children: TocNode[];
+}
+
+function buildTocTree(hs: typeof headings): TocNode[] {
+  if (!hs.length) return [];
+  const baseDepth = Math.min(...hs.map((h) => h.depth));
+
+  const nodes: TocNode[] = hs.map((h) => ({
+    slug: h.slug,
+    text: h.text,
+    depth: h.depth - baseDepth + 1,
+    rawDepth: h.depth,
+    children: [],
+  }));
+
+  const root: TocNode = { slug: "", text: "", depth: 0, rawDepth: 0, children: [] };
+  const stack: TocNode[] = [root];
+
+  for (const node of nodes) {
+    while (stack.length > 1 && stack[stack.length - 1].depth >= node.depth) {
+      stack.pop();
+    }
+    stack[stack.length - 1].children.push(node);
+    stack.push(node);
+  }
+
+  return root.children;
+}
+
+const tocHeadings = headings.filter((h) => h.depth <= 3);
+const tocTree = buildTocTree(tocHeadings);
+const hasToc = tocHeadings.length >= 1;
+---
+
+<BaseLayout
+  title={`${entry.data.title} | 0xSkunk`}
+  description={entry.data.description ?? `Vault: ${entry.data.title}`}
+>
+
+  <div class:list={[hasToc && "lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10"]}>
+    {hasToc && (
+      <aside class="hidden lg:block">
+        <nav class="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto pr-1">
+          <p class="font-mono text-sm text-white font-semibold mb-3 truncate">
+            {entry.data.title}
+          </p>
+          <TocTree items={tocTree} />
+        </nav>
+      </aside>
+    )}
+
+    <article class:list={[!hasToc && "max-w-4xl mx-auto"]}>
+      <header class="mb-10">
+        {entry.data.category && (
+          <p class="font-mono text-xs uppercase tracking-[0.15em] text-[#9ab8ff] mb-2">
+            {entry.data.category}
+          </p>
+        )}
+        <h1 class="text-3xl font-bold text-white mb-3">
+          {entry.data.title}
+        </h1>
+        {entry.data.description && (
+          <p class="text-[#9aa1ae] leading-relaxed">
+            {entry.data.description}
+          </p>
+        )}
+        {entry.data.tags && entry.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-x-2.5 gap-y-1 mt-4">
+            {entry.data.tags.map((tag) => (
+              <span class="text-xs font-mono text-[#9aa1ae]">#{tag}</span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="prose-custom">
+        <Content />
+      </div>
+    </article>
+  </div>
+
+  <script>
+    function initToc() {
+      const links = Array.from(
+        document.querySelectorAll<HTMLAnchorElement>("a[data-toc-link]")
+      );
+      if (!links.length) return;
+
+      const items = links
+        .map((link) => {
+          const slug = link.getAttribute("data-toc-link");
+          const el = slug ? document.getElementById(slug) : null;
+          return el && slug ? { el, slug, link } : null;
+        })
+        .filter((x): x is { el: HTMLElement; slug: string; link: HTMLAnchorElement } => x !== null);
+
+      if (!items.length) return;
+
+      const updateExpansion = (activeSlug: string | null) => {
+        const lis = document.querySelectorAll<HTMLLIElement>("li[data-has-children='true']");
+        lis.forEach((li) => {
+          const subtreeLinks = li.querySelectorAll("a[data-toc-link]");
+          const contains = Array.from(subtreeLinks).some(
+            (a) => a.getAttribute("data-toc-link") === activeSlug
+          );
+          li.setAttribute("data-expanded", contains ? "true" : "false");
+        });
+      };
+
+      const OFFSET = 120;
+      const findActiveSlug = (): string => {
+        let active = items[0].slug;
+        for (const item of items) {
+          const top = item.el.getBoundingClientRect().top;
+          if (top - OFFSET <= 0) active = item.slug;
+          else break;
+        }
+        return active;
+      };
+
+      const setActive = (slug: string) => {
+        for (const item of items) {
+          item.link.classList.toggle("toc-active", item.slug === slug);
+        }
+        updateExpansion(slug);
+      };
+
+      let ticking = false;
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          setActive(findActiveSlug());
+          ticking = false;
+        });
+      };
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      setActive(findActiveSlug());
+    }
+// ---------- Code blocks estilo consola (sin botones) ----------
+function initCodeBlocks() {
+  document
+    .querySelectorAll<HTMLPreElement>(".prose-custom pre")
+    .forEach((pre) => {
+      if (pre.dataset.processed === "true") return;
+      pre.dataset.processed = "true";
+
+      const lang = pre.dataset.language || "";
+
+      // Envolver el pre en un wrapper
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      // Cabecera con solo el lenguaje
+      const header = document.createElement("div");
+      header.className = "code-header";
+
+      const langLabel = document.createElement("span");
+      langLabel.className = "code-lang";
+      langLabel.textContent = lang;
+      header.appendChild(langLabel);
+
+      wrapper.appendChild(header);
+    });
+}
+    initCodeBlocks();
+    initToc();
+    document.addEventListener("astro:page-load", () => {
+    initCodeBlocks();
+    initToc();
+    });
+  </script>
+</BaseLayout>

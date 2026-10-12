@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 
+
 interface Props {
   writeups: CollectionEntry<"writeups">[];
 }
@@ -186,33 +187,46 @@ const segments = statsWithPct
     <a
       href={`/writeups/${w.id}/`}
       data-writeup-id={w.id}
+      data-published-at={(w.data.publishedAt ?? w.data.date)?.toISOString() ?? ""}
       class="group flex flex-col rounded-lg border border-[#3a3f4a] bg-[#2e323c] hover:bg-[#353945] hover:border-[#9ab8ff] transition-colors overflow-hidden"
     >
-      {w.data.image ? (
-        w.data.imageShape === "square" ? (
-          <div class="aspect-square w-full overflow-hidden bg-[#262932]">
-            <img
-              src={w.data.image.src}
-              alt={w.data.title}
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-            />
-          </div>
+      <div class="relative">
+        {w.data.image ? (
+          w.data.imageShape === "square" ? (
+            <div class="aspect-square w-full overflow-hidden bg-[#262932]">
+              <img
+                src={w.data.image.src}
+                alt={w.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div class="aspect-square w-full bg-[#262932] p-6 flex items-center justify-center overflow-hidden">
+              <img
+                src={w.data.image.src}
+                alt={w.data.title}
+                class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          )
         ) : (
-          <div class="aspect-square w-full bg-[#262932] p-6 flex items-center justify-center overflow-hidden">
-            <img
-              src={w.data.image.src}
-              alt={w.data.title}
-              class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
-              loading="lazy"
-            />
+          <div class="aspect-square w-full bg-[#262932] flex items-center justify-center">
+            <span class="font-mono text-xs text-[#6b7280]">no image</span>
           </div>
-        )
-      ) : (
-        <div class="aspect-square w-full bg-[#262932] flex items-center justify-center">
-          <span class="font-mono text-xs text-[#6b7280]">no image</span>
-        </div>
-      )}
+        )}
+
+        <!-- Badge NEW — visibilidad controlada por el script cliente -->
+        <span
+          data-new-badge
+          style="display: none;"
+          class="absolute top-3 right-3 z-10 items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-[#8fd48f] text-[#262932] shadow-lg shadow-[#8fd48f]/30"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-[#262932] animate-pulse"></span>
+          NEW
+        </span>
+      </div>
 
       <div class="flex flex-col flex-1 p-5 gap-3">
         {w.data.date && (
@@ -563,6 +577,43 @@ const segments = statsWithPct
 
   initStatsModal();
   document.addEventListener("astro:page-load", initStatsModal);
+  // ---------- Badge "NEW" ----------
+  // ---------- Badge "NEW" ----------
+  function initNewBadges() {
+    const NEW_THRESHOLD_DAYS = 14;
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const now = Date.now();
+
+    document
+      .querySelectorAll<HTMLElement>("[data-published-at]")
+      .forEach((card) => {
+        const iso = card.dataset.publishedAt;
+        const badge = card.querySelector<HTMLElement>("[data-new-badge]");
+        if (!badge) return;
+
+        if (!iso) {
+          badge.style.display = "none";
+          return;
+        }
+
+        const publishedTime = new Date(iso).getTime();
+        if (isNaN(publishedTime)) {
+          badge.style.display = "none";
+          return;
+        }
+
+        const diff = (now - publishedTime) / MS_PER_DAY;
+        const isNew = diff >= 0 && diff <= NEW_THRESHOLD_DAYS;
+        badge.style.display = isNew ? "inline-flex" : "none";
+      });
+  }
+  initStatsModal();
+  initNewBadges();
+
+  document.addEventListener("astro:page-load", () => {
+    initStatsModal();
+    initNewBadges();
+  });
 </script>
 
 <style>

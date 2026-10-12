@@ -57,3 +57,7 @@ Thumbs.db
 .cache/
 *.tsbuildinfo
 .vscode/launch.json
+CONTEXT.md
+full-context.md
+scripts/generate-context.mjs
+COSAS.md

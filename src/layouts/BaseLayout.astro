@@ -26,12 +26,8 @@ const navItems = [
 const currentPath = Astro.url.pathname;
 
 // Header y footer SIEMPRE al mismo ancho (el más grande)
-const chromeClass = "max-w-7xl mx-auto px-6";
+const containerClass = "max-w-5xl mx-auto px-6";
 
-// El main cambia según la página
-const mainClass = wide
-  ? "max-w-7xl mx-auto px-6"
-  : "max-w-6xl mx-auto px-6";
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image, Astro.site);
@@ -73,8 +69,8 @@ const ogImageURL = new URL(image, Astro.site);
   </head>
   <body class="min-h-screen flex flex-col font-sans bg-[#262932] text-[#dce0e6]">
     <header class="border-b border-[#3a3f4a]">
-      <nav class:list={[chromeClass, "py-4 flex items-center justify-between gap-4"]}>
-        <a href="/" class="font-semibold text-lg text-white hover:text-[#9ab8ff] transition-colors shrink-0">
+          <nav class:list={[containerClass, "py-4 flex items-center justify-between gap-4"]}>
+          <a href="/" class="font-semibold text-lg text-white hover:text-[#9ab8ff] transition-colors shrink-0">
           ~/0xSkunk
         </a>
 
@@ -122,8 +118,8 @@ const ogImageURL = new URL(image, Astro.site);
         id="mobile-menu"
         class="md:hidden hidden border-t border-[#3a3f4a] bg-[#262932]"
       >
-        <ul class:list={[chromeClass, "py-3 flex flex-col gap-1"]}>
-          {navItems.map((item) => {
+        <ul class:list={[containerClass, "py-3 flex flex-col gap-1"]}>
+            {navItems.map((item) => {
             const isActive =
               currentPath === item.href ||
               (item.href !== "/" && currentPath.startsWith(item.href));
@@ -147,21 +143,19 @@ const ogImageURL = new URL(image, Astro.site);
       </div>
     </header>
 
-    <main class:list={[mainClass, "flex-1 py-10 w-full"]}>
+    <main class:list={[containerClass, "flex-1 py-10 w-full"]}>
       <slot />
     </main>
 
         <footer class="border-t border-[#3a3f4a] mt-16">
-      <div class:list={[chromeClass, "py-4 grid grid-cols-3 items-center gap-4"]}>
-        <!-- Izquierda: 2026 + logo + nombre -->
-        <div class="flex items-center gap-2 text-xs font-mono text-[#6b7280]">
-          <span>2026</span>
+        <div class:list={[containerClass, "py-4 flex flex-col items-center gap-3 sm:grid sm:grid-cols-3 sm:items-center sm:gap-4"]}>        <!-- Izquierda: 2026 + logo + nombre -->
+        <div class="order-2 sm:order-1 flex items-center justify-center sm:justify-start gap-2 text-xs font-mono text-[#6b7280]">          <span>2026</span>
           <span class="text-[#9ab8ff]">©</span>
           <span class="text-[#9aa1ae]">0xSkunk</span>
         </div>
 
         <!-- Centro: iconos sociales -->
-        <ul class="flex items-center justify-center gap-3">
+        <ul class="order-1 sm:order-2 flex items-center justify-center gap-3">
           <li>
             <a
               href="https://github.com/0xSkunk"
@@ -202,7 +196,7 @@ const ogImageURL = new URL(image, Astro.site);
           </li>
           <li>
             <a
-              href="https://app.hackthebox.com/profile/tu-id"
+              href="https://app.hackthebox.com/users/3121171"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="HackTheBox"
@@ -225,7 +219,7 @@ const ogImageURL = new URL(image, Astro.site);
         </ul>
 
         <!-- Derecha: Built with ♥ -->
-        <p class="text-xs font-mono text-[#6b7280] text-right">
+        <p class="order-3 text-xs font-mono text-[#6b7280] text-center sm:text-right">
           Built with <span class="text-[#e88a8a]">♥</span>
         </p>
       </div>

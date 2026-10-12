@@ -5,6 +5,7 @@ difficulty: Easy
 os: Linux
 releaseDate: 2021-06-05
 date: 2026-03-17
+publishedAt: 2026-10-14
 tags: [IDORS,Wireshark,Linux,Facil,HTB]
 image: ./thumb.png
 imageShape: square

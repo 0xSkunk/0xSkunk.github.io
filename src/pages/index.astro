@@ -1,32 +1,213 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import CertCarousel from "../components/CertCarousel.astro";
 ---
-
 <BaseLayout
-  title="Inicio | 0xSkunk"
-  description="Portfolio de ciberseguridad"
-  wide
->  
-  <section class="max-w-2xl">
-    <p class="font-mono text-sm text-[#9ab8ff] mb-3">$ whoami</p>
-    <h1 class="text-4xl font-bold mb-4 text-white">En construccion..</h1>
-    <p class="text-lg text-[#9aa1ae] mb-6 leading-relaxed">
-      En construccion..
-    </p>
+  title="Inicio — 0xSkunk"
+  description="Portfolio de ciberseguridad de 0xSkunk"
+>
+  <section>
+    <!-- Prompt arriba como en las demás secciones -->
+    <p class="font-mono text-sm text-[#9ab8ff] mb-8">$ whoami</p>
 
-    <div class="flex flex-wrap gap-3">
-      <a
-        href="/writeups"
-        class="px-4 py-2 bg-[#9ab8ff] text-[#262932] rounded-lg text-sm font-medium hover:bg-[#b0c7ff] transition-colors"
-      >
-        Ver writeups →
-      </a>
-      <a
-        href="https://github.com/tu-usuario"
-        class="px-4 py-2 border border-[#3a3f4a] rounded-lg text-sm font-medium text-[#dce0e6] hover:bg-[#2e323c] transition-colors"
-      >
-        GitHub
-      </a>
+    <div class="mx-auto max-w-3xl grid gap-10 md:grid-cols-[240px_1fr] md:gap-12 items-center">
+      <!-- ========================
+           Columna izquierda: tarjeta de perfil
+           ======================== -->
+      <aside class="flex flex-col items-center">
+        <!-- Avatar -->
+        <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-[#3a3f4a] mb-5 shrink-0">
+          <img
+            src="/avatar.png"
+            alt="0xSkunk"
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <!-- Nombre con cursor de consola -->
+        <h2 class="text-2xl font-bold text-white mb-1 font-mono flex items-center justify-center gap-1">
+          0xSkunk<span class="typing-cursor"></span>
+        </h2>
+
+        <!-- Rol -->
+        <p class="text-sm text-[#9aa1ae] leading-relaxed mb-6 text-center">
+          Cybersecurity Enthusiast
+        </p>
+
+        <!-- Datos con iconos -->
+        <ul class="space-y-2.5 text-sm">
+          <li class="flex items-center gap-3 text-[#9aa1ae]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>ES</span>
+          </li>
+          <li>
+            <a
+              href="https://linkedin.com/in/tuusuario"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-3 text-[#9aa1ae] hover:text-[#9ab8ff] transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 shrink-0">
+                <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/tuusuario"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-3 text-[#9aa1ae] hover:text-[#9ab8ff] transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 shrink-0">
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-1.93c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.19.92-.26 1.91-.39 2.9-.39s1.98.13 2.9.39c2.21-1.5 3.18-1.19 3.18-1.19.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .3.21.67.8.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://app.hackthebox.com/profile/tu-id"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-3 text-[#9aa1ae] hover:text-[#9ab8ff] transition-colors"
+            >
+              <span class="relative w-4 h-4 shrink-0 inline-block">
+                <img
+                  src="https://cdn.simpleicons.org/hackthebox/9aa1ae"
+                  alt=""
+                  class="absolute inset-0 w-4 h-4 transition-opacity group-hover:opacity-0"
+                  loading="lazy"
+                />
+                <img
+                  src="https://cdn.simpleicons.org/hackthebox/9ab8ff"
+                  alt=""
+                  class="absolute inset-0 w-4 h-4 opacity-0 transition-opacity group-hover:opacity-100"
+                  loading="lazy"
+                />
+              </span>
+              <span>HackTheBox</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- ========================
+           Columna derecha: descripción
+           ======================== -->
+      <div class="md:border-l md:border-[#3a3f4a] md:pl-12 text-center md:text-left">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
+          Javier Garcia
+        </h1>
+
+        <div class="space-y-4 text-[#9aa1ae] leading-relaxed">
+<p>
+  Entusiasta de la ciberseguridad, tocando tanto el lado Blue como el Red. Por una parte me formo en defensa y saco certificaciones, y por otra me divierto rompiendo máquinas en CTFs.
+</p>
+<p>
+  Este rincón es básicamente mi libreta de apuntes en público. Aquí voy subiendo mis writeups, notas técnicas, cheatsheets de ambos mundos y alguna herramienta que programo. 
+</p>
+<p>
+  Si estás en el mismo camino y algo de lo que hay por aquí te sirve, ¡todo tuyo!
+</p>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex flex-wrap gap-3 mt-8 justify-center md:justify-start">
+          <a
+            href="/writeups"
+            class="px-4 py-2 bg-[#9ab8ff] text-[#262932] rounded-lg text-sm font-medium hover:bg-[#b0c7ff] transition-colors"
+          >
+            Ver writeups →
+          </a>
+          <a
+            href="/proyectos"
+            class="px-4 py-2 border border-[#3a3f4a] rounded-lg text-sm font-medium text-[#dce0e6] hover:bg-[#2e323c] hover:border-[#9ab8ff] transition-colors"
+          >
+            Proyectos
+          </a>
+        </div>
+      </div>
     </div>
   </section>
+
+    <!-- Separador -->
+  <hr class="my-12 border-t border-[#3a3f4a]" />
+
+  <!-- Certificaciones -->
+  <section>
+    <p class="font-mono text-sm text-[#9ab8ff] mb-6">$ cat certificaciones.txt</p>
+
+    <CertCarousel />
+  </section>
+
+    <!-- Separador -->
+  <hr class="my-12 border-t border-[#3a3f4a]" />
+
+  <!-- Formación académica -->
+  <section>
+    <p class="font-mono text-sm text-[#9ab8ff] mb-6">$ cat formacion.txt</p>
+
+    <div class="rounded-xl border border-[#3a3f4a] bg-[#2e323c] overflow-hidden">
+      <div class="flex flex-col sm:flex-row items-start gap-5 sm:gap-6 p-5 sm:p-6">
+        <!-- Icono -->
+        <div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-lg bg-[#262932] border border-[#3a3f4a] flex items-center justify-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9ab8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-3">
+            <div>
+              <h3 class="text-lg sm:text-xl font-bold text-white leading-tight mb-1">
+                Grado Superior en Administración de Sistemas Informáticos en Red
+              </h3>
+              <p class="font-mono text-sm text-[#9ab8ff]">
+                ASIR
+              </p>
+            </div>
+          </div>
+
+          <p class="text-sm text-[#9aa1ae] leading-relaxed">
+            Formación centrada en la administración de sistemas operativos (Windows y Linux),
+            redes, seguridad, servicios de red, virtualización y despliegue de infraestructuras.
+          </p>
+
+          <!-- Tags con temas clave -->
+          <div class="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-[#3a3f4a]">
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#353945] text-[#9aa1ae]">#redes</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#353945] text-[#9aa1ae]">#linux</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#353945] text-[#9aa1ae]">#windows-server</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#353945] text-[#9aa1ae]">#virtualizacion</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-[#353945] text-[#9aa1ae]">#seguridad</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .typing-cursor {
+      display: inline-block;
+      width: 0.55rem;
+      height: 1.25rem;
+      background: #9ab8ff;
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      to {
+        visibility: hidden;
+      }
+    }
+  </style>
 </BaseLayout>

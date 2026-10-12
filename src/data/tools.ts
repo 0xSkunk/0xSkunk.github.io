@@ -24,8 +24,6 @@ export const tools: ToolCategory[] = [
       { name: "Masscan", url: "https://github.com/robertdavidgraham/masscan", description: "Escáner masivo capaz de barrer todo Internet en minutos.", tags: ["network"] },
       { name: "Amass", url: "https://github.com/owasp-amass/amass", description: "Enumeración de subdominios y mapeo de superficie de ataque.", tags: ["osint", "recon"] },
       { name: "Subfinder", url: "https://github.com/projectdiscovery/subfinder", description: "Enumeración pasiva de subdominios con múltiples fuentes.", tags: ["recon"] },
-      { name: "httpx", url: "https://github.com/projectdiscovery/httpx", description: "Toolkit para sondear hosts HTTP y extraer información rápidamente.", tags: ["http", "recon"] },
-      { name: "naabu", url: "https://github.com/projectdiscovery/naabu", description: "Escáner de puertos rápido y fiable del ecosistema ProjectDiscovery.", tags: ["network"] },
     ],
   },
   {

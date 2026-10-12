@@ -2,32 +2,184 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="404 — No encontrado" description="Página no encontrada" wide>
-  <section class="max-w-2xl mx-auto text-center py-20">
-    <p class="font-mono text-sm text-[#9ab8ff] mb-3">$ cat 404.txt</p>
-    <h1 class="text-7xl font-bold text-white mb-4">404</h1>
-    <p class="text-lg text-[#9aa1ae] mb-10 leading-relaxed">
-      Esta página no existe. Puede que se haya movido, que nunca haya estado aquí,
-      o que te hayas equivocado al escribir la URL.
-    </p>
+<BaseLayout title="404 — No encontrado" description="Página no encontrada">
+  <section class="max-w-2xl mx-auto py-12">
+    <div class="terminal-window">
+      <!-- Barra superior con traffic lights -->
+      <div class="terminal-header">
+        <span class="terminal-title">bash — guest@portfolio: ~</span>
+      </div>
 
-    <div class="flex flex-wrap justify-center gap-3">
-      <a
-        href="/"
-        class="px-4 py-2 bg-[#9ab8ff] text-[#262932] rounded-lg text-sm font-medium hover:bg-[#b0c7ff] transition-colors"
-      >
-        ← Volver al inicio
-      </a>
-      <a
-        href="/writeups"
-        class="px-4 py-2 border border-[#3a3f4a] rounded-lg text-sm font-medium text-[#dce0e6] hover:bg-[#2e323c] transition-colors"
-      >
-        Ver writeups
-      </a>
+      <!-- Cuerpo -->
+      <div class="terminal-body">
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-cmd">cd <span id="not-found-path">/ruta/solicitada/</span></span>
+        </div>
+
+        <div class="terminal-line">
+          <span class="terminal-error">bash: cd: <span id="not-found-path-error">/ruta/solicitada/</span>: No such file or directory</span>
+        </div>
+
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-cmd">exit</span>
+        </div>
+
+        <div class="terminal-line">
+          <span class="terminal-comment"># La página que buscas no existe (404).</span>
+        </div>
+
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-cursor"></span>
+        </div>
+
+        <!-- Enlaces -->
+        <div class="mt-8 pt-6 border-t border-[#3a3f4a] flex flex-wrap gap-3">
+          <a
+            href="/"
+            class="px-3 py-1.5 rounded border border-[#3a3f4a] text-xs font-mono text-[#9aa1ae] hover:text-[#9ab8ff] hover:border-[#9ab8ff] transition-colors"
+          >
+            cd ~/inicio
+          </a>
+          <a
+            href="/writeups"
+            class="px-3 py-1.5 rounded border border-[#3a3f4a] text-xs font-mono text-[#9aa1ae] hover:text-[#9ab8ff] hover:border-[#9ab8ff] transition-colors"
+          >
+            cd ~/writeups
+          </a>
+          <a
+            href="/proyectos"
+            class="px-3 py-1.5 rounded border border-[#3a3f4a] text-xs font-mono text-[#9aa1ae] hover:text-[#9ab8ff] hover:border-[#9ab8ff] transition-colors"
+          >
+            cd ~/proyectos
+          </a>
+        </div>
+      </div>
     </div>
-
-    <p class="mt-16 font-mono text-xs text-[#6b7280]">
-      <span class="text-[#8fd48f]">exit code:</span> 404 · <span class="text-[#9aa1ae]">file not found</span>
-    </p>
   </section>
+
+  <script>
+    function fillRealPath() {
+      const pathEl = document.getElementById("not-found-path");
+      const pathErrEl = document.getElementById("not-found-path-error");
+      if (!pathEl || !pathErrEl) return;
+
+      // Coge el path real sin el dominio, incluye query string si la hay
+      let path = window.location.pathname;
+      if (window.location.search) path += window.location.search;
+      if (window.location.hash) path += window.location.hash;
+
+      // Si por lo que sea está vacío, ponemos "/"
+      if (!path) path = "/";
+
+      // textContent escapa automáticamente el HTML → seguro contra XSS
+      pathEl.textContent = path;
+      pathErrEl.textContent = path;
+    }
+
+    fillRealPath();
+    document.addEventListener("astro:page-load", fillRealPath);
+  </script>
+
+  <style>
+    .terminal-window {
+      border: 1px solid #3a3f4a;
+      border-radius: 0.5rem;
+      background: #1d2028;
+      overflow: hidden;
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .terminal-header {
+      position: relative;
+      height: 2rem;
+      background: #252830;
+      border-bottom: 1px solid #3a3f4a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .terminal-header::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 52px;
+      height: 10px;
+      background-image:
+        radial-gradient(circle at center, #ff5f57 4.5px, transparent 5px),
+        radial-gradient(circle at center, #febc2e 4.5px, transparent 5px),
+        radial-gradient(circle at center, #28c840 4.5px, transparent 5px);
+      background-size: 20px 100%;
+      background-position: 0 center, 20px center, 40px center;
+      background-repeat: no-repeat;
+    }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #6b7280;
+      letter-spacing: 0.05em;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .terminal-line {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .terminal-line + .terminal-line {
+      margin-top: 0.4rem;
+    }
+
+    .terminal-prompt {
+      color: #8fd48f;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .terminal-cmd {
+      color: #dce0e6;
+      word-break: break-all;
+    }
+
+    .terminal-error {
+      color: #e88a8a;
+      word-break: break-all;
+    }
+
+    .terminal-comment {
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 0.5rem;
+      height: 1rem;
+      background: #8fd48f;
+      animation: blink 1s steps(2, start) infinite;
+      align-self: center;
+    }
+
+    @keyframes blink {
+      to {
+        visibility: hidden;
+      }
+    }
+  </style>
 </BaseLayout>

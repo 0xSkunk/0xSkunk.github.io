@@ -5,6 +5,7 @@ difficulty: Medium
 os: Linux
 releaseDate: 2026-06-05
 date: 2026-09-28
+publishedAt: 2026-10-15
 tags: [Samba,Rclone,Symlink,WideLinks,Groups,Services,HTB,Linux,Medio]
 image: ./thumb.png
 imageShape: round

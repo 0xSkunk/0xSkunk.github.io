@@ -17,7 +17,7 @@ export const projects: Project[] = [
       "Script en Python que orquesta nmap, httpx y subfinder para hacer un barrido inicial completo. Genera un informe estructurado y guarda todos los outputs ordenados por target.",
     github: "https://github.com/tuusuario/pyrecon",
     demo: "https://pyrecon.tudominio.com",
-    image: "/images/projects/pyrecon.png",
+    image: "/certs/1.png",
     stack: ["python", "asyncio", "nmap"],
     status: "active",
   },

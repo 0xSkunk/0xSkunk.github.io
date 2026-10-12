@@ -1,0 +1,361 @@
+---
+import { certifications } from "../data/certifications";
+
+const gradients = [
+  "linear-gradient(135deg, #2a3550 0%, #1e2027 100%)",
+  "linear-gradient(135deg, #3a2540 0%, #1e2027 100%)",
+  "linear-gradient(135deg, #2d3b2d 0%, #1e2027 100%)",
+  "linear-gradient(135deg, #3b2a2a 0%, #1e2027 100%)",
+  "linear-gradient(135deg, #3b3526 0%, #1e2027 100%)",
+  "linear-gradient(135deg, #2b3a40 0%, #1e2027 100%)",
+];
+
+// Se respeta el orden exacto del array en certifications.ts
+const sorted = certifications;
+---
+
+<div class="cert-carousel" data-carousel>
+  <button
+    type="button"
+    class="cert-arrow cert-arrow--prev"
+    data-carousel-prev
+    aria-label="Anterior"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  </button>
+
+  <div class="cert-track" data-carousel-track>
+    {sorted.map((cert, i) => {
+      const Wrapper = cert.url ? "a" : "div";
+      return (
+        <Wrapper
+          {...(cert.url ? {
+            href: cert.url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+          } : {})}
+          class:list={[
+            "cert-card",
+            cert.url && "cert-card--clickable",
+            cert.status === "in-progress" && "cert-card--wip",
+          ]}
+        >
+          <div class="cert-banner">
+            {cert.logo ? (
+              <img src={cert.logo} alt={cert.name} class="cert-logo" loading="lazy" />
+            ) : (
+              <div
+                class="cert-placeholder"
+                style={`background: ${cert.gradient ?? gradients[i % gradients.length]}`}
+              >
+                <span class="cert-placeholder-text">
+                  {cert.name.split(/[\s-]/)[0]}
+                </span>
+              </div>
+            )}
+
+            {cert.status === "completed" ? (
+              <span class="cert-badge cert-badge--completed">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                {cert.year ?? "OK"}
+              </span>
+            ) : (
+              <span class="cert-badge cert-badge--wip">
+                <span class="cert-badge-dot"></span>
+                En proceso
+              </span>
+            )}
+          </div>
+
+          <div class="cert-info">
+            <h3 class="cert-name">{cert.name}</h3>
+            <p class="cert-issuer">{cert.issuer}</p>
+          </div>
+        </Wrapper>
+      );
+    })}
+  </div>
+
+  <button
+    type="button"
+    class="cert-arrow cert-arrow--next"
+    data-carousel-next
+    aria-label="Siguiente"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  function initCertCarousel() {
+    document
+      .querySelectorAll<HTMLElement>("[data-carousel]")
+      .forEach((carousel) => {
+        if (carousel.dataset.bound === "true") return;
+        carousel.dataset.bound = "true";
+
+        const track = carousel.querySelector<HTMLElement>("[data-carousel-track]");
+        const prev = carousel.querySelector<HTMLButtonElement>("[data-carousel-prev]");
+        const next = carousel.querySelector<HTMLButtonElement>("[data-carousel-next]");
+        if (!track || !prev || !next) return;
+
+        // Desplaza "una tarjeta" por clic (con el gap incluido)
+        const SCROLL_AMOUNT = () => {
+          const card = track.querySelector<HTMLElement>(".cert-card");
+          if (!card) return track.clientWidth;
+          const style = getComputedStyle(track);
+          const gap = parseFloat(style.columnGap || style.gap || "0") || 0;
+          return card.offsetWidth + gap;
+        };
+
+        const updateArrows = () => {
+          const maxScroll = track.scrollWidth - track.clientWidth;
+          const x = track.scrollLeft;
+
+          prev.disabled = x <= 4;
+          next.disabled = x >= maxScroll - 4;
+
+          // Si no hay scroll (todas caben), ocultamos flechas
+          const nothingToScroll = maxScroll <= 4;
+          carousel.classList.toggle("cert-carousel--no-scroll", nothingToScroll);
+        };
+
+        prev.addEventListener("click", () => {
+          track.scrollBy({ left: -SCROLL_AMOUNT(), behavior: "smooth" });
+        });
+
+        next.addEventListener("click", () => {
+          track.scrollBy({ left: SCROLL_AMOUNT(), behavior: "smooth" });
+        });
+
+        track.addEventListener("scroll", updateArrows, { passive: true });
+        window.addEventListener("resize", updateArrows);
+
+        // Bloqueamos el scroll con rueda/teclado para que solo se mueva con las flechas
+        track.addEventListener("wheel", (e) => {
+          // Solo bloquear si el usuario intenta scrollear horizontal o vertical dentro del track
+          // Desplazamos con las flechas para controlar la UX
+          if (Math.abs(e.deltaX) > 0 || e.shiftKey) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+
+        requestAnimationFrame(updateArrows);
+        window.addEventListener("load", updateArrows);
+      });
+  }
+
+  initCertCarousel();
+  document.addEventListener("astro:page-load", initCertCarousel);
+</script>
+
+<style>
+  .cert-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* Flechas */
+  .cert-arrow {
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2e323c;
+    border: 1px solid #3a3f4a;
+    border-radius: 0.5rem;
+    color: #9aa1ae;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+
+  .cert-arrow:hover:not(:disabled) {
+    color: #9ab8ff;
+    border-color: #9ab8ff;
+    background: #353945;
+  }
+
+  .cert-arrow:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .cert-carousel--no-scroll .cert-arrow {
+    display: none;
+  }
+
+  /* Track: exactamente 3 tarjetas visibles, sin scrollbar */
+  .cert-track {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0.25rem 0.25rem 0.5rem;
+
+    /* Ocultar scrollbar en todos los navegadores */
+    scrollbar-width: none;        /* Firefox */
+    -ms-overflow-style: none;     /* IE/Edge antiguos */
+  }
+
+  .cert-track::-webkit-scrollbar {
+    display: none;                /* Chrome / Safari / Edge */
+  }
+
+  /* Tarjeta: 1/3 del ancho del track menos el gap */
+  .cert-card {
+    flex: 0 0 auto;
+    width: calc((100% - 2rem) / 3); /* 3 tarjetas + 2 gaps de 1rem */
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.75rem;
+    border: 1px solid #3a3f4a;
+    background: #2e323c;
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .cert-card--clickable:hover {
+    border-color: #9ab8ff;
+    transform: translateY(-2px);
+  }
+
+  .cert-card--wip {
+    border-color: #514a35;
+  }
+
+  .cert-card--wip.cert-card--clickable:hover {
+    border-color: #e5c07b;
+  }
+
+  /* Banner cuadrado */
+  .cert-banner {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: #262932;
+    overflow: hidden;
+  }
+
+  /* La imagen ocupa el cuadrado. object-fit cover si es grande, contain si es pequeña.
+     Usamos contain para que se vea entera y no se recorte. */
+  .cert-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+  }
+
+  .cert-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cert-placeholder-text {
+    font-family: var(--font-mono);
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Badge */
+  .cert-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cert-badge--completed {
+    background: rgba(143, 212, 143, 0.15);
+    color: #8fd48f;
+    border: 1px solid rgba(143, 212, 143, 0.4);
+  }
+
+  .cert-badge--wip {
+    background: rgba(229, 192, 123, 0.15);
+    color: #e5c07b;
+    border: 1px solid rgba(229, 192, 123, 0.4);
+  }
+
+  .cert-badge-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: #e5c07b;
+    animation: cert-pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes cert-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* Info */
+  .cert-info {
+    padding: 1rem 1.15rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .cert-name {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .cert-issuer {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: #9aa1ae;
+  }
+
+  /* En móvil, mostramos 1 tarjeta a la vez */
+  @media (max-width: 640px) {
+    .cert-card {
+      width: 100%;
+    }
+    .cert-arrow {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+
+  /* En tablet, 2 tarjetas */
+  @media (min-width: 641px) and (max-width: 900px) {
+    .cert-card {
+      width: calc((100% - 1rem) / 2);
+    }
+  }
+</style>
