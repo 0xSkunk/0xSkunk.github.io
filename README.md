@@ -1,8 +1,8 @@
 # Portfolio de Ciberseguridad
 
-Portfolio personal donde documento writeups de máquinas, comparto recursos y herramientas, y muestro mis proyectos. Construido con [Astro](https://astro.build/) y desplegado en GitHub Pages.
+Portfolio personal donde documento writeups de máquinas, comparto recursos, herramientas y cheatsheets, y muestro mis proyectos. Construido con [Astro](https://astro.build/) y desplegado en GitHub Pages.
 
-🔗 **Sitio en vivo**: [0xSkunk.github.io](0xSkunk.github.io)
+🔗 **Sitio en vivo**: [javig633.github.io](https://javig633.github.io)
 
 ## Stack
 
@@ -10,20 +10,21 @@ Portfolio personal donde documento writeups de máquinas, comparto recursos y he
 - **[Tailwind CSS v4](https://tailwindcss.com/)** — Estilos utilitarios
 - **[MDX](https://docs.astro.build/en/guides/integrations-guide/mdx/)** — Markdown extendido
 - **[Shiki](https://shiki.style/)** — Resaltado de sintaxis con tema `github-dark-dimmed`
-- **[rehype-callouts](https://github.com/lin-stephanie/rehype-callouts)** — Callouts estilo Obsidian
+- **[rehype-callouts](https://github.com/lin-stephanie/rehype-callouts)** — Callouts estilo Obsidian (`> [!NOTE]`)
 - **[Fuse.js](https://www.fusejs.io/)** — Búsqueda difusa en cliente para writeups
+- **[Simple Icons](https://simpleicons.org/)** — Iconos vía CDN
 
 ## Estructura
 
 ```
 portfolio-cyber/
 ├── .github/workflows/      # CI/CD para GitHub Pages
-├── public/                 # Assets estáticos (favicon, robots.txt)
-├── scripts/                # Utilidades (conversión de writeups de Obsidian)
+├── public/                 # Assets estáticos (favicon, robots.txt, certs)
+├── scripts/                # Utilidades (conversión de Obsidian, full-context)
 ├── src/
-│   ├── components/         # Componentes reutilizables
-│   ├── content/            # Writeups (Content Collection)
-│   ├── data/               # Datos estáticos (recursos, herramientas, proyectos)
+│   ├── components/         # Componentes reutilizables (TocTree, WriteupSearch, CertCarousel)
+│   ├── content/            # Writeups y Vault (Content Collections)
+│   ├── data/               # Datos estáticos (recursos, herramientas, proyectos, certs)
 │   ├── layouts/            # Layout base
 │   ├── pages/              # Rutas del sitio
 │   └── styles/             # CSS global
@@ -36,11 +37,13 @@ portfolio-cyber/
 
 | Ruta | Descripción |
 |---|---|
-| `/` | Landing page |
-| `/writeups` | Index de writeups con buscador y paginación |
-| `/writeups/[slug]` | Detalle de cada writeup con TOC lateral |
+| `/` | Landing page (perfil, bio, certificaciones, formación) |
+| `/writeups` | Index de writeups con buscador, filtros, stats y paginación |
+| `/writeups/[slug]` | Detalle de writeup con TOC, rating, y code blocks terminal |
+| `/vault` | Índice interno de notas y cheatsheets (no enlazado en nav) |
+| `/vault/[slug]` | Detalle de nota con TOC y code blocks sin botones |
 | `/proyectos` | Proyectos personales |
-| `/recursos` | Colección de blogs, labs y recursos |
+| `/recursos` | Colección de blogs, labs, cheatsheets y recursos |
 | `/herramientas` | Herramientas de pentesting organizadas por categoría |
 
 ## Desarrollo
@@ -53,8 +56,8 @@ portfolio-cyber/
 ### Instalación
 
 ```bash
-git clone https://github.com/0xskunk/0xskunk.github.io.git
-cd 0xskunk.github.io
+git clone https://github.com/Javig633/javig633.github.io.git
+cd javig633.github.io
 npm install
 ```
 
@@ -66,104 +69,114 @@ npm run dev
 
 El sitio estará disponible en `http://localhost:4321`.
 
+### Build de producción
 
-## Añadir un writeup
+```bash
+npm run build
+```
 
-Los writeups viven en `src/content/writeups/`. Cada uno es una carpeta con esta estructura:
+## Añadir contenido
+
+### Writeups
+
+Los writeups viven en `src/content/writeups/`. Estructura:
 
 ```
 src/content/writeups/nombre-maquina/
 ├── index.md
-└── Images/
-    ├── captura-1.png
-    └── captura-2.png
+└── Images/            ← DEBE llamarse "Images" con I mayúscula
+    └── captura.png
 ```
 
-### Frontmatter del `index.md`
-
-- Colocarlo arriba del todo de cada writeup, esto te muestra informacion sobre las maquinas y le coloca la imagen que debe de estar en `Images` y llamarla `machine.png`
+**Frontmatter recomendado:**
 
 ```yaml
 ---
 title: Nombre de la máquina
-platform: HackTheBox       # HackTheBox / TryHackMe / VulnHub / etc
+platform: HackTheBox       # HackTheBox / TryHackMe / VulnHub
 difficulty: Easy           # Easy / Medium / Hard / Insane
 os: Linux                  # Linux / Windows
-date: 2024-05-10
-tags: [web, drupal, cms]
-image: ./Images/machine.png
+releaseDate: 2021-06-05    # Fecha de salida de la máquina
+date: 2024-03-17           # Fecha en que la completaste
+publishedAt: 2026-10-16    # Fecha en que subes el writeup (para ordenar y badge NEW)
+userRank: 890              # Tu rango/posición
+rating: 4.5                # Puntuación (0-5) para las estrellas
+tags: [idor, wireshark, linux, facil]
+image: ./Images/cap.png
+imageShape: round          # round (icono) | square (imagen a sangre)
 ---
 ```
 
-### Notas importantes
+> **Nota**: Si `publishedAt` tiene menos de 14 días, se mostrará un badge **NEW** en la tarjeta del index. El cálculo se hace en el cliente, por lo que caduca automáticamente sin necesidad de rebuild.
 
-- **Las imágenes se referencian con rutas relativas** al `.md`:
-  ```markdown
-  ![descripción](./Images/captura-1.png)
-  ```
-- **La carpeta de imágenes DEBE llamarse `Images` con `I` mayúscula**. Linux es case-sensitive y no encontraría la carpeta si la llamas `images`.
-- **Los `.md` escritos en Obsidian no son compatibles directamente** (Obsidian usa `![[imagen.png]]` en lugar de `![](ruta)`). Para convertirlos, hay un script:
+### Vault (Cheatsheets y Notas)
 
+El vault es para contenido markdown accesible por enlace directo (sin índice público). Estructura:
+
+```
+src/content/vault/nombre-nota/
+├── index.md
+└── Images/
+    └── captura.png
+```
+
+**Frontmatter:**
+
+```yaml
+---
+title: Reverse Shells
+description: Colección de reverse shells que uso habitualmente.
+category: Cheatsheet     # Cheatsheet / Guía / Apunte
+date: 2026-10-11
+tags: [shell, bash, python]
+---
+```
+
+> Los bloques de código en el vault muestran la cabecera terminal con el lenguaje, pero **no** tienen botones de copiar o expandir (se ven siempre completos).
+
+Para enlazar una nota del vault desde la página de recursos, añade el enlace en `src/data/resources.ts`:
+
+```ts
+{ name: "Reverse Shells", url: "/vault/reverse-shells/", description: "mis cheatsheets de reverse shells" }
+```
 
 ### Conversión desde Obsidian
 
-Si tienes un writeup escrito en Obsidian con la sintaxis `![[Pasted image 20260101.png]]`, usa el script de conversión:
+Si escribes en Obsidian y usas `![[imagen.png]]`, ejecuta:
 
 ```bash
 npm run convert
 ```
 
-El script:
+Este script:
+1. Renombra el `.md` a `index.md`.
+2. Reemplaza espacios por guiones en imágenes.
+3. Convierte `![[...]]` a `![](./Images/...)`.
 
-1. Renombra el `.md` principal a `index.md`.
-2. Reemplaza espacios por guiones en los nombres de las imágenes.
-3. Convierte la sintaxis `![[...]]` de Obsidian a `![](./Images/...)` estándar de Markdown.
+### Recursos y Herramientas
 
-## Añadir un proyecto
+- **Recursos**: Edita `src/data/resources.ts`. Ahora usa un solo nivel de categorías (ej. Cheatsheets, Bug Bounty, Web Security) con sus items.
+- **Herramientas**: Edita `src/data/tools.ts`.
+- **Proyectos**: Edita `src/data/projects.ts`.
+- **Certificaciones**: Edita `src/data/certifications.ts`. Para añadir un logo, guárdalo en `public/certs/nombre.png` y añade `logo: "/certs/nombre.png"`. El orden del array es el orden en el que aparecen en el carrusel de la home.
 
-Edita `src/data/projects.ts` y añade un objeto al array:
+## Scripts
 
-```ts
-{
-  name: "Nombre del proyecto",
-  tagline: "Frase corta descriptiva",
-  description: "Descripción de 2-3 líneas.",
-  github: "https://github.com/tuusuario/repo",
-  demo: "https://demo.tudominio.com",  // opcional
-  image: "/images/projects/nombre.png", // opcional
-  stack: ["python", "fastapi"],
-  status: "active", // active | wip | archived
-}
-```
+- `npm run dev` — Servidor de desarrollo.
+- `npm run build` — Build de producción.
+- `npm run convert` — Convierte writeups de Obsidian.
 
-## Añadir recursos o herramientas
+## Deploy
 
-Los recursos y herramientas están en `src/data/resources.ts` y `src/data/tools.ts` respectivamente. Sigue la estructura existente — cada ítem tiene `name`, `url` y opcionalmente `description`, `tags` e `icon`.
+El sitio se despliega automáticamente en **GitHub Pages** al hacer push a `main` vía GitHub Actions.
 
-Para los iconos de herramientas se usa [Simple Icons](https://simpleicons.org/) vía CDN:
+### Configuración inicial (una sola vez)
 
-```ts
-icon: "https://cdn.simpleicons.org/nmap/9ab8ff"
-```
-
-## Personalización
-
-### Paleta de colores
-
-Definida en `src/styles/global.css`:
-
-| Variable | Valor | Uso |
-|---|---|---|
-| `--color-bg` | `#262932` | Fondo general |
-| `--color-surface` | `#2e323c` | Superficie de tarjetas |
-| `--color-border` | `#3a3f4a` | Bordes |
-| `--color-fg` | `#dce0e6` | Texto principal |
-| `--color-fg-muted` | `#9aa1ae` | Texto secundario |
-| `--color-accent` | `#9ab8ff` | Azul de acento |
-
+1. En el repositorio: **Settings → Pages → Source: GitHub Actions**.
+2. El workflow `.github/workflows/deploy.yml` hace el resto.
 
 ## Licencia
 
-El código de este proyecto está disponible bajo la licencia MIT. Los writeups y el contenido textual son propiedad del autor.
+El código de este proyecto está bajo la licencia MIT. Los writeups y el contenido textual son propiedad del autor.
 
 ---

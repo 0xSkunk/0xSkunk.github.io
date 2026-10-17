@@ -8,26 +8,15 @@ import { resources } from "../data/resources";
   description="Recursos útiles de ciberseguridad"
   wide
 >
-  <div class="max-w-8xl mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_180px] lg:gap-12">
+  <div class="max-w-5xl mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_180px] lg:gap-12">
     <!-- Contenido principal -->
     <article>
       <p class="font-mono text-sm text-[#9ab8ff] mb-3">$ cat recursos.md</p>
       <div class="callout mb-10" data-callout="note">
-        <div class="callout-title">Créditos</div>
+        <div class="callout-title">Recursos</div>
         <div class="callout-content">
           <p>
-            Esta lista nace inspirada en la página de recursos de  
-            <a
-              href="https://mushroom.cat/resources"
-              target="_blank"
-              rel="noopener noreferrer"
-            > mushroom.cat</a
-            > y en gran parte ordenado y clasificado por 
-            <a
-              href="https://anan.rocks/resources"
-              target="_blank"
-              rel="noopener noreferrer"
-            > 0xAnan</a>. Pásate por sus blogs a echar un vistazo.
+            Lista de recursos que he ido recopilando y que pueden ser utiles. Tambien incluyo algunos cheatsheet creados por mi.
           </p>
         </div>
       </div>
@@ -35,45 +24,34 @@ import { resources } from "../data/resources";
       <div class="space-y-10">
         {resources.map((cat) => (
           <section id={cat.id} class="scroll-mt-24">
-            <h2 class="flex items-center gap-3 text-xl font-bold text-white mb-6 pb-2 border-b border-[#3a3f4a]">
+            <h2 class="flex items-center gap-3 text-xl font-bold text-white mb-5 pb-2 border-b border-[#3a3f4a]">
               <span class="font-mono text-[#6b7280]">//</span>
               {cat.name}
             </h2>
 
-            <div class="space-y-7">
-              {cat.subcategories.map((sub) => (
-                <div>
-                  {sub.name && (
-                    <h3 class="text-xs font-semibold uppercase tracking-widest text-[#9ab8ff] mb-3">
-                      {sub.name}
-                    </h3>
-                  )}
-                  <ul class="grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
-                    {sub.items.map((item) => (
-                      <li class="text-sm leading-relaxed flex gap-2">
-                        <span class="text-[#9aa1ae] shrink-0 select-none">&gt;</span>
-                        <span>
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-medium text-[#dce0e6] hover:text-[#9ab8ff] transition-colors"
-                          >
-                            {item.name}
-                          </a>
-                          {item.description && (
-                            <span class="text-[#9aa1ae]">
-                              {" — "}
-                              {item.description}
-                            </span>
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+            <ul class="grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
+              {cat.items.map((item) => (
+                <li class="text-sm leading-relaxed flex gap-2">
+                  <span class="text-[#9aa1ae] shrink-0 select-none">&gt;</span>
+                  <span>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-medium text-[#dce0e6] hover:text-[#9ab8ff] transition-colors"
+                    >
+                      {item.name}
+                    </a>
+                    {item.description && (
+                      <span class="text-[#9aa1ae]">
+                        {" — "}
+                        {item.description}
+                      </span>
+                    )}
+                  </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </section>
         ))}
       </div>
