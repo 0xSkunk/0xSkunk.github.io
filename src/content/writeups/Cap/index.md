@@ -8,7 +8,7 @@ date: 2026-03-17
 publishedAt: 2026-10-14
 tags: [IDORS,Wireshark,Linux,Facil,HTB]
 image: ./thumb.png
-imageShape: square
+imageShape: round
 userRank: 80905
 rating: 4.6
 ---

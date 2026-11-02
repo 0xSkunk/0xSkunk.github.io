@@ -29,8 +29,8 @@ export const certifications: Certification[] = [
     name: "Certificado Profesional de Ciberseguridad",
     issuer: "Google",
     year: "2026",
-    status: "in-progress",
-    url: "#",
+    status: "completed",
+    url: "https://www.credly.com/badges/59827f2b-1a0d-4e29-90a5-992ffa275ed6/public_url",
     logo: "/certs/google.png",
   },
 
