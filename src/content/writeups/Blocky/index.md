@@ -23,7 +23,7 @@ Blocky es una máquina de dificultad fácil de Hack The Box centrada en la enume
 
 # Enumeracion
 
-# Nmap
+## Nmap
 
 > Realizamos un escaneo inicial de todos los puertos TCP abiertos utilizando un ritmo de envío rápido (`--min-rate 5000`), omitiendo el descubrimiento de hosts (`-Pn`) y la resolución DNS (`-n`) para agilizar el proceso:
 ```bash
