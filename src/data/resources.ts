@@ -15,7 +15,7 @@ export const resources: Category[] = [
     id: "mis-recursos",
     name: "Mis Recursos",
     items: [
-      { name: "Web de Revshell", url: "https://book.hacktricks.xyz/", description: "" },],
+      { name: "Shell Generator", url: "https://0xskunk.github.io/Shell-Generator/", description: "Generador de Rev/Bind Shells." },],
   },
   {
     id: "plataformas-ctf",
