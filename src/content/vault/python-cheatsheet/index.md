@@ -1,6 +1,5 @@
 ---
 title: CheatSheet Python
-description: CheatSheet de Python con cosas basicas.
 category: Cheatsheet
 date: 2026-10-30
 tags: [cheatsheet, python]

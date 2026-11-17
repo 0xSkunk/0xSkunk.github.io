@@ -18,6 +18,15 @@ export const resources: Category[] = [
       { name: "Shell Generator", url: "https://0xskunk.github.io/Shell-Generator/", description: "Generador de Rev/Bind Shells." },],
   },
   {
+    id: "cheatsheet",
+    name: "Cheatsheets",
+    items: [
+      { name: "Bash Cheatsheet", url: "/vault/bash-cheatsheet", description: "" },
+      { name: "Python Cheatsheet", url: "/vault/python-cheatsheet", description: "" },
+      { name: "Go Cheatsheet", url: "/vault/go-cheatsheet", description: "" },
+    ],
+  },
+  {
     id: "plataformas-ctf",
     name: "Laboratorios CTFs",
     items: [
@@ -40,15 +49,6 @@ export const resources: Category[] = [
       { name: "Bug Crowd", url: "https://www.bugcrowd.com/", description: "Comunidad global de crowdsourced security y triaje." },
       { name: "Secur0", url: "https://secur0.com/es", description: "Plataforma hispana de hacking ético y pentesting." },
   ],
-  },
-  {
-    id: "cheatsheet",
-    name: "Cheatsheets",
-    items: [
-      { name: "Bash Cheatsheet", url: "/vault/bash-cheatsheet", description: "" },
-      { name: "Python Cheatsheet", url: "/vault/python-cheatsheet", description: "" },
-      { name: "Go Cheatsheet", url: "/vault/go-cheatsheet", description: "En proceso.." },
-    ],
   },
   {
     id: "documentazion-aprendizaje",
