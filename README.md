@@ -175,8 +175,10 @@ El sitio se despliega automáticamente en **GitHub Pages** al hacer push a `main
 1. En el repositorio: **Settings → Pages → Source: GitHub Actions**.
 2. El workflow `.github/workflows/deploy.yml` hace el resto.
 
-## Licencia
+## 📄 Licencias
 
-El código de este proyecto está bajo la licencia MIT. Los writeups y el contenido textual son propiedad del autor.
+Este repositorio utiliza un esquema de licencia dual para separar el código del contenido educativo:
 
+* **Código fuente:** El código de la web y scripts están bajo la licencia [MIT](LICENSE).
+* **Contenido:** Los writeups, cheatsheets y artículos están bajo la licencia [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.es) *(ver [LICENSE-CONTENT](LICENSE-CONTENT))*. Puedes compartirlos y usarlos para estudiar siempre que menciones la autoría original.
 ---
